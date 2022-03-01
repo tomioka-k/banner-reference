@@ -1,6 +1,8 @@
 from .models import Category, Tag, Color, Image
 from rest_framework import generics
 from .serializers import CategorySerializers, TagSerializers, ColorSerializer, ImageSerializer
+from .filters import ImageFilter
+from django_filters import rest_framework as filters
 
 
 class CategoryListAPIView(generics.ListAPIView):
@@ -21,3 +23,5 @@ class ColorListAPIView(generics.ListAPIView):
 class ImageListAPIView(generics.ListAPIView):
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
+    filter_backend = (filters.DjangoFilterBackend)
+    filterset_class = ImageFilter
