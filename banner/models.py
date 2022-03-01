@@ -49,6 +49,7 @@ class Image(models.Model):
         max_length=20
     )
     image = models.ImageField(upload_to=image_path)
+    color = models.ForeignKey(Color, on_delete=models.SET_NULL, null=True)
     width = models.IntegerField()
     height = models.IntegerField()
     release_date = models.DateField(auto_now_add=True)
