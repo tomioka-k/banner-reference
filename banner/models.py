@@ -33,7 +33,7 @@ class Color(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return f'{self.name}_(#{self.code})'
 
 
 class Image(models.Model):
@@ -58,10 +58,7 @@ class Image(models.Model):
         return self.image.url
 
     def save(self, *args, **kwargs):
-        # image_file = self.request.FILES.get('image')
         im = PIL_Image.open(self.image)
-        print(im.width)
-        print(im.height)
         self.width = im.width
         self.height = im.height
         if im.width == im.height:
