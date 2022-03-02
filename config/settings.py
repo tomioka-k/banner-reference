@@ -9,9 +9,13 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+from google.oauth2 import service_account
+import environ
 from pathlib import Path
 import os
+
+env = environ.Env()
+env.read_env('.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-q_xwk@80xaw0-=*q-9wbdo%ygizz%naa6e2m5q$f2cl7jf0kt-'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 
 # Application definition
@@ -42,8 +46,10 @@ INSTALLED_APPS = [
     'banner.apps.BannerConfig',
     # third party
     'rest_framework',
+    'rest_framework.authtoken',
     'django_cleanup.apps.CleanupConfig',
     'django_filters',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +63,13 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
-
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
@@ -136,6 +148,17 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Google Cloud Storage
+
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    'secrets/credentials.json'  # サービスアカウントからダウンロードした鍵
+)
+DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+# STATICFILES_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+GS_BUCKET_NAME = env('GS_BUCKET_NAME')
+GS_PROJECT_ID = env('GS_PROJECT_ID')
+GS_QUERYSTRING_AUTH = env.bool('GS_QUERYSTRING_AUTH')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

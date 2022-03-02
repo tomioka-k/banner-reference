@@ -20,9 +20,10 @@ from . import settings
 
 from django.contrib.staticfiles.urls import static, staticfiles_urlpatterns
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('banner/', include('banner.urls'))
+    path('api/banner/', include('banner.urls')),
 ]
 
 if settings.DEBUG:
