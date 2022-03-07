@@ -1,6 +1,5 @@
 from django.db import models
 import uuid
-from django.core.validators import MinLengthValidator
 from PIL import Image as PIL_Image
 
 
@@ -27,9 +26,7 @@ class Color(models.Model):
     name = models.CharField(max_length=20, unique=True)
     code = models.CharField(
         verbose_name='color code',
-        unique=True, max_length=6,
-        validators=[MinLengthValidator(6)],
-        help_text='6 digits'
+        unique=True, max_length=20,
     )
 
     def __str__(self):
