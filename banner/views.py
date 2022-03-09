@@ -27,7 +27,8 @@ class ColorListAPIView(generics.ListAPIView):
 
 
 class ImageListAPIView(generics.ListAPIView):
-    queryset = Image.objects.all()
+    queryset = Image.objects.select_related(
+        'category', 'color').prefetch_related('tag').order_by('-release_date')
     serializer_class = ImageSerializer
     filter_backend = (filters.DjangoFilterBackend)
     filterset_class = ImageFilter
