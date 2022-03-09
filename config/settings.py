@@ -64,9 +64,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',  # ここに追加
-]
+CORS_ORIGIN_WHITELIST = env.list('CORS_ORIGIN_WHITELIST')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -114,7 +112,17 @@ if DEBUG:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': env('DATABASE_ENGINE'),
+            'NAME': env('DATABASE_NAME'),
+            'USER': env('DATABASE_USER_NAME'),
+            'PASSWORD': env('DATABASE_PASSWORD'),
+            'HOST': '',
+            'PORT': '',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

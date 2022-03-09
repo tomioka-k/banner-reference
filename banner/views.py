@@ -8,7 +8,7 @@ from django_filters import rest_framework as filters
 
 
 class StandardResultsSetPagination(pagination.PageNumberPagination):
-    page_size = 5
+    page_size = 50
 
 
 class CategoryListAPIView(generics.ListAPIView):
