@@ -6,28 +6,28 @@ from rest_framework import serializers
 class CategorySerializers(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('name', 'description')
+        fields = ('id', 'name', 'description')
 
 
 class TagSerializers(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('name',)
+        fields = ('id', 'name')
 
 
 class ColorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Color
-        fields = ('name', 'code')
+        fields = ('id', 'name', 'code')
 
 
 class ImageSerializer(serializers.ModelSerializer):
 
     category = serializers.StringRelatedField()
     color = ColorSerializer()
-    tag = serializers.StringRelatedField(many=True)
+    tag = TagSerializers(many=True)
 
     class Meta:
         model = Image
-        fields = ('category', 'tag', 'image_type', 'image', 'color',
+        fields = ('id', 'category', 'tag', 'image_type', 'image', 'color',
                   'width', 'height', 'release_date')

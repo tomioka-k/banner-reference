@@ -1,8 +1,14 @@
 from .models import Category, Tag, Color, Image
-from rest_framework import generics
+from rest_framework import generics, pagination
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from .serializers import CategorySerializers, TagSerializers, ColorSerializer, ImageSerializer
 from .filters import ImageFilter
 from django_filters import rest_framework as filters
+
+
+class StandardResultsSetPagination(pagination.PageNumberPagination):
+    page_size = 50
 
 
 class CategoryListAPIView(generics.ListAPIView):
@@ -21,7 +27,15 @@ class ColorListAPIView(generics.ListAPIView):
 
 
 class ImageListAPIView(generics.ListAPIView):
-    queryset = Image.objects.all()
+    queryset = Image.objects.select_related(
+        'category', 'color').prefetch_related('tag').order_by('-release_date')
     serializer_class = ImageSerializer
     filter_backend = (filters.DjangoFilterBackend)
     filterset_class = ImageFilter
+    pagination_class = StandardResultsSetPagination
+
+
+class ImageCountAPIView(APIView):
+    def get(self, request):
+        image_count = Image.objects.all().count()
+        return Response({"count": image_count})
